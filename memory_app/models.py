@@ -5,7 +5,7 @@ from django.core import validators as v
 
 
 # Create your models here.
-class Progress(models.Model):
+class Memory(models.Model):
     
     image = models.CharField(
         blank=True,
