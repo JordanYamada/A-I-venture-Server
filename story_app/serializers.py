@@ -1,30 +1,6 @@
 from .models import Story
 from rest_framework import serializers
 
-  
-
-# class CartItemSerializer(serializers.ModelSerializer):
-#     item = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = Cart_item
-#         fields = [
-#             "id",
-#             "item",
-#             "quantity",
-#         ]
-
-#     def get_item(self, obj):
-#         # Assuming 'item' is a related field in your CartItem model,
-#         # you can define the logic to retrieve the item data here.
-#         return {
-#             'id': obj.item.id,
-#             'category': obj.item.category,
-#             'name': obj.item.name,
-#             'price': obj.item.price,
-#             # Add more fields as needed
-#         }
-
     
 class StorySerializer(serializers.ModelSerializer):
     progress = serializers.SerializerMethodField()
