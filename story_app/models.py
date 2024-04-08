@@ -17,10 +17,11 @@ class Story(models.Model):
         null=True,
     )
     title = models.CharField(
+        default=False,
         blank=True,
         null=True,
     )
-    role = models.BooleanField(
+    completed = models.BooleanField(
         blank=True,
         null=True,
     )
