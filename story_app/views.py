@@ -12,86 +12,149 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST
 )
 import requests
+from ai_dventure_proj.settings import env
+from openai import OpenAI
+client = OpenAI(
+  api_key=env.get("OPENAI_API_KEY"),
+)
 # Create your views here.
 
-class Cart_manager(TokenReq):
-    def get(self, request):
-        # Get the user's cart
-        cart = get_object_or_404(Cart, client=request.user)
+class All_stories(TokenReq):
+    # def get(self, request):
+    #     # Get the user's cart
+    #     cart = get_object_or_404(Cart, client=request.user)
 
-        # Retrieve cart items associated with the cart
-        cart_items = cart.cart_items.all()
+    #     # Retrieve cart items associated with the cart
+    #     cart_items = cart.cart_items.all()
 
-        # Serialize cart items
-        cart_item_serializer = CartItemSerializer(cart_items, many=True)
+    #     # Serialize cart items
+    #     cart_item_serializer = CartItemSerializer(cart_items, many=True)
         
-        # Calculate total price, handling None values for price and quantity
-        total_price = sum((item.item.price or 0) * (item.quantity or 0) for item in cart_items)
+    #     # Calculate total price, handling None values for price and quantity
+    #     total_price = sum((item.item.price or 0) * (item.quantity or 0) for item in cart_items)
 
-        for cart_item in cart_items:
-            cart_item.item.price = str(cart_item.item.price)
+    #     for cart_item in cart_items:
+    #         cart_item.item.price = str(cart_item.item.price)
 
-        response_data = {
-            "cart_items": cart_item_serializer.data,
-            "total_price": (total_price)
-        }
-        return Response(response_data, status=HTTP_200_OK)
+    #     response_data = {
+    #         "cart_items": cart_item_serializer.data,
+    #         "total_price": (total_price)
+    #     }
+    #     return Response(response_data, status=HTTP_200_OK)
 
 
-    def put(self, request, cart_item_id, method):
+    # def put(self, request, cart_item_id, method):
 
-        data = get_object_or_404(Item, id=cart_item_id)
+    #     data = get_object_or_404(Item, id=cart_item_id)
 
-        if data:
-            cart = Cart.objects.filter(client=request.user).first()
+    #     if data:
+    #         cart = Cart.objects.filter(client=request.user).first()
 
-            # If the user doesn't have a cart, create one
-            if not cart:
-                cart = Cart.objects.create(client=request.user)
+    #         # If the user doesn't have a cart, create one
+    #         if not cart:
+    #             cart = Cart.objects.create(client=request.user)
 
-            # Check if the item is already in the cart
-            cart_item = Cart_item.objects.get(cart=cart, item=data)
+    #         # Check if the item is already in the cart
+    #         cart_item = Cart_item.objects.get(cart=cart, item=data)
 
-            if method == 'add':
-                # Increment the quantity if the item is already in the cart
-                cart_item.quantity += 1
-                # if cart_item.is_valid():
-                cart_item.save()
-            elif method == 'sub':
-                cart_item.quantity -= 1
-                # if cart_item.is_valid():
-                if cart_item.quantity == 0:
-                    cart_item.delete()
-                else:
-                    cart_item.save()
-            response = self.get(request)
-            return Response(response.data, status=HTTP_200_OK)
-        return Response(status=HTTP_400_BAD_REQUEST)
+    #         if method == 'add':
+    #             # Increment the quantity if the item is already in the cart
+    #             cart_item.quantity += 1
+    #             # if cart_item.is_valid():
+    #             cart_item.save()
+    #         elif method == 'sub':
+    #             cart_item.quantity -= 1
+    #             # if cart_item.is_valid():
+    #             if cart_item.quantity == 0:
+    #                 cart_item.delete()
+    #             else:
+    #                 cart_item.save()
+    #         response = self.get(request)
+    #         return Response(response.data, status=HTTP_200_OK)
+    #     return Response(status=HTTP_400_BAD_REQUEST)
     
 
 
-    def delete(self, request, cart_item_id):
+    # def delete(self, request, cart_item_id):
 
-        data = get_object_or_404(Cart_item, id=cart_item_id)
+    #     data = get_object_or_404(Cart_item, id=cart_item_id)
 
-        if data:
-            data.delete()
-            response = self.get(request)
-            return Response(response.data, status=HTTP_200_OK)
+    #     if data:
+    #         data.delete()
+    #         response = self.get(request)
+    #         return Response(response.data, status=HTTP_200_OK)
 
 
-        # cart_item = get_object_or_404(Item, id=cart_item_id)
-        # cart = Cart.objects.filter(client=request.user).first()
-        # # data = request.data.copy()
-        # if method == 'add':
-        #     cart_item.price += 1
-        # elif method == 'sub':
-        #     cart_item.price -= 1     
 
-            
-        #     else:
-        #         # Increment the quantity if the item is already in the cart
+    #     return Response(status=HTTP_400_BAD_REQUEST)
+        pass
+    
+class A_story(TokenReq):
+    # def get(self, request, story_id):
+    #     # Get the user's cart
+    #     cart = get_object_or_404(Cart, client=request.user)
 
-        return Response(status=HTTP_400_BAD_REQUEST)
+    #     # Retrieve cart items associated with the cart
+    #     cart_items = cart.cart_items.all()
+
+    #     # Serialize cart items
+    #     cart_item_serializer = CartItemSerializer(cart_items, many=True)
+        
+    #     # Calculate total price, handling None values for price and quantity
+    #     total_price = sum((item.item.price or 0) * (item.quantity or 0) for item in cart_items)
+
+    #     for cart_item in cart_items:
+    #         cart_item.item.price = str(cart_item.item.price)
+
+    #     response_data = {
+    #         "cart_items": cart_item_serializer.data,
+    #         "total_price": (total_price)
+    #     }
+    #     return Response(response_data, status=HTTP_200_OK)
+
+
+    # def put(self, request, cart_item_id, method):
+
+    #     data = get_object_or_404(Item, id=cart_item_id)
+
+    #     if data:
+    #         cart = Cart.objects.filter(client=request.user).first()
+
+    #         # If the user doesn't have a cart, create one
+    #         if not cart:
+    #             cart = Cart.objects.create(client=request.user)
+
+    #         # Check if the item is already in the cart
+    #         cart_item = Cart_item.objects.get(cart=cart, item=data)
+
+    #         if method == 'add':
+    #             # Increment the quantity if the item is already in the cart
+    #             cart_item.quantity += 1
+    #             # if cart_item.is_valid():
+    #             cart_item.save()
+    #         elif method == 'sub':
+    #             cart_item.quantity -= 1
+    #             # if cart_item.is_valid():
+    #             if cart_item.quantity == 0:
+    #                 cart_item.delete()
+    #             else:
+    #                 cart_item.save()
+    #         response = self.get(request)
+    #         return Response(response.data, status=HTTP_200_OK)
+    #     return Response(status=HTTP_400_BAD_REQUEST)
+    
+
+
+    # def delete(self, request, cart_item_id):
+
+    #     data = get_object_or_404(Cart_item, id=cart_item_id)
+
+    #     if data:
+    #         data.delete()
+    #         response = self.get(request)
+    #         return Response(response.data, status=HTTP_200_OK)
+
+
+    #     return Response(status=HTTP_400_BAD_REQUEST)
+    def post(self, request):
         # pass
-    
