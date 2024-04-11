@@ -11,7 +11,7 @@ from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST
 )
-from .utils import embark_story
+from .utils import embark_story, make_image, save_image
 import requests
 import json
 from ai_dventure_proj.settings import env
@@ -165,7 +165,10 @@ class A_story(TokenReq):
     #     return Response(status=HTTP_400_BAD_REQUEST)
     def post(self, request):
         data = embark_story(request)
+        ai_image = make_image(data["dialogue"])
+        print(ai_image)
+        new_image = save_image(ai_image)
 
-        return Response({"full body":data, "introductory_text": data["dialogue"], "choices": [data["choice 1"],data["choice 2"],data["choice 3"]]}, status=HTTP_200_OK)
+        return Response({"full body":data, "introductory_text": data["dialogue"], "choices": [data["choice 1"],data["choice 2"],data["choice 3"]], "image" : new_image}, status=HTTP_200_OK)
 
     pass
