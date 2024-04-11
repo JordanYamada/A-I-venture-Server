@@ -22,5 +22,6 @@ def separate_choices(text):
     for m in match:
       introductory_text = text[:m.start()]  # Capture text before the first choice
       choices.append(m.group(2).strip())  # Extract and strip choice description (group 2)
+  introductory_text = text.split("Choice")[0]
 
   return introductory_text, choices
