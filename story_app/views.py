@@ -2,18 +2,25 @@ from django.shortcuts import render, get_object_or_404, get_list_or_404
 # from rest_framework.views import APIView
 from user_app.views import TokenReq
 from rest_framework.response import Response
-from .models import Cart, Cart_item
-from item_app.models import Item
-from .serializers import StorySerializer, CartItemSerializer
+# from .models import Cart, Cart_item
+# from item_app.models import Item
+from .serializers import StorySerializer
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_204_NO_CONTENT,
     HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST
 )
+from .utils import separate_choices
 import requests
+import json
 from ai_dventure_proj.settings import env
 from openai import OpenAI
+import google.generativeai as genai
+
+genai.configure(api_key=env.get("GEMINI_API_KEY"))
+model = genai.GenerativeModel('gemini-pro')
+
 client = OpenAI(
   api_key=env.get("OPENAI_API_KEY"),
 )
@@ -157,4 +164,31 @@ class A_story(TokenReq):
 
     #     return Response(status=HTTP_400_BAD_REQUEST)
     def post(self, request):
-        # pass
+        print(request.body)
+        body = json.loads(request.body)
+        # print("ROLE!!!!!!",body["role"])
+        # print("THEME!!!!!!!!!!!!!!!!!!:", body["theme"])
+        if body["theme"] == "epic adventure":
+             voice = "dungeon master"
+        elif body["theme"] == "space adventure":
+             voice = "space captain"     
+
+        # print("THEME!!!!:",body["theme"],"VOICE!!!!!!!!:", voice)
+        response = client.chat.completions.create(
+          model="gpt-3.5-turbo",
+          messages=[
+            {"role": "system", "content": f"You are a {voice}."},
+            {"role": "user", "content": f'Begin a/an {body["theme"]} story about a {body["role"]}, and give me three choices to continue from. Format each choice to start as "Choice", and each choice will have a danger level shown as percentage. Separate each choice by a line break, but do not add any line breaks inside the choices. Example: "Choice 1...description...danger level" (all in one line).'},
+            # {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+            # {"role": "user", "content": "Where was it played?"}
+          ]
+        )
+
+        # Separate the introductory text and choices from the generated response
+        story_text = response.choices[0].message.content
+        print(story_text)  # This will print the entire generated story
+        introductory_text, choices = separate_choices(story_text)
+
+        return Response({"full body":response.choices[0].message.content, "introductory_text": introductory_text, "choices": choices}, status=HTTP_200_OK)
+
+    pass

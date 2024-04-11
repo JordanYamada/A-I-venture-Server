@@ -21,6 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/users/', include("user_app.urls")),
     path("api/v1/stories/", include("story_app.urls")),
-    path('api/v1/progress/', include("progress_app.urls")),
-    path('api/v1/memories/', include("memory_app.urls")),
+    # path('api/v1/progress/', include("progress_app.urls")),
+    # path('api/v1/memories/', include("memory_app.urls")),
 ]
