@@ -20,11 +20,23 @@ class Progress(models.Model):
         blank=True,
         null=True,
     )
+    danger_one = models.CharField(
+        blank=True,
+        null=True,
+    )
     choice_two = models.CharField(
         blank=True,
         null=True,
     )
+    danger_one = models.CharField(
+        blank=True,
+        null=True,
+    )
     choice_three = models.CharField(
+        blank=True,
+        null=True,
+    )
+    danger_one = models.CharField(
         blank=True,
         null=True,
     )

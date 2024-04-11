@@ -24,6 +24,7 @@ class Story(models.Model):
     completed = models.BooleanField(
         blank=True,
         null=True,
+        default=False,
     )
 
     client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, related_name="stories")

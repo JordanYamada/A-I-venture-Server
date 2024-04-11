@@ -1,27 +1,49 @@
 import re
+import json
+from ai_dventure_proj.settings import env
+import io
+import requests
+import boto3
+from django.http import JsonResponse
+from PIL import Image
+from openai import OpenAI
+import google.generativeai as genai
 
-def separate_choices(text):
-  """
-  This function separates the choices from a given text string and stores the introductory text.
+genai.configure(api_key=env.get("GEMINI_API_KEY"))
+model = genai.GenerativeModel('gemini-pro')
 
-  Args:
-      text: The text string containing the choices.
+client = OpenAI(
+  api_key=env.get("OPENAI_API_KEY"),
+)
 
-  Returns:
-      A tuple containing two elements:
-      - introductory_text: The text before the choices.
-      - choices: A list of strings, where each string represents a choice description.
-  """
-  choices = []
-  introductory_text = ""
-  # Regex pattern to match lines starting with "Choice n" (modify if needed)
-  choice_pattern = r"(Choice \d+:\s?(.*?))(?=\n|$)"
 
-  match = re.finditer(choice_pattern, text, re.DOTALL)  # Find all matches (use DOTALL for multiline)
-  if match:
-    for m in match:
-      introductory_text = text[:m.start()]  # Capture text before the first choice
-      choices.append(m.group(2).strip())  # Extract and strip choice description (group 2)
-  introductory_text = text.split("Choice")[0]
+def embark_story(request):
+  print(request.body)
+  body = json.loads(request.body)
+  # print("ROLE!!!!!!",body["role"])
+  # print("THEME!!!!!!!!!!!!!!!!!!:", body["theme"])
+  if body["theme"] == "epic adventure":
+        voice = "dungeon master"
+  elif body["theme"] == "space adventure":
+        voice = "space captain"     
 
-  return introductory_text, choices
+  # print("THEME!!!!:",body["theme"],"VOICE!!!!!!!!:", voice)
+  response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+      {"role": "system", "content": f"You are a {voice}."},
+      {"role": "user", "content": (f'Begin a/an {body["theme"]} story about a {body["role"]}, and give me three choices to continue from. Format each choice to start as "Choice", and each choice will have a danger level shown as percentage.'+" Give me the response in a json format following this example:{title: story title, dialogue: initial story text, choice 1: choice 1 text, danger level 1: danger level pecentage, choice 2: choice 2 text, danger level 2: danger level pecentage, choice 3: choice 3 text, danger level 3: danger level percentage}")},
+      # {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
+      # {"role": "user", "content": "Where was it played?"}
+    ]
+  )
+
+  # Separate the introductory text and choices from the generated response
+  story_text = response.choices[0].message.content
+  print(story_text)  # This will print the entire generated story
+  data = json.loads(story_text)
+  print(data["choice 1"])
+
+  # introductory_text, choices = separate_choices(story_text)
+
+  return data
