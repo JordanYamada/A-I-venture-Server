@@ -7,6 +7,11 @@ from story_app.models import Story
 
 # Create your models here.
 class Progress(models.Model):
+
+    title = models.CharField(
+        blank=True,
+        null=True,
+    )
     
     image = models.CharField(
         blank=True,
@@ -28,7 +33,7 @@ class Progress(models.Model):
         blank=True,
         null=True,
     )
-    danger_one = models.CharField(
+    danger_two = models.CharField(
         blank=True,
         null=True,
     )
@@ -36,7 +41,7 @@ class Progress(models.Model):
         blank=True,
         null=True,
     )
-    danger_one = models.CharField(
+    danger_three = models.CharField(
         blank=True,
         null=True,
     )

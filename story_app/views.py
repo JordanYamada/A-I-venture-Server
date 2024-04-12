@@ -4,6 +4,7 @@ from user_app.views import TokenReq
 from rest_framework.response import Response
 # from .models import Cart, Cart_item
 from progress_app.models import Progress
+from progress_app.serializers import ProgressSerializer
 from .serializers import StorySerializer
 from rest_framework.status import (
     HTTP_200_OK,
@@ -27,6 +28,59 @@ client = OpenAI(
 # Create your views here.
 
 class All_stories(TokenReq):
+        
+    def post(self, request):
+        data = embark_story(request)
+        ai_image = make_image(data["dialogue"])
+        print(ai_image)
+        new_image = save_image(ai_image)
+
+        new_story = {
+            "theme": data["theme"],
+            "role": data["role"],
+            "title": data["title"],
+            "completed": False, 
+        }
+
+        # Create a new story instance
+        story_serializer = StorySerializer(data=new_story)
+        if story_serializer.is_valid():
+            story = story_serializer.save()
+            print(data)
+            # Create a new progress instance associated with the new story
+            progress_data = {
+                'title': data["title"],
+                'image': new_image,
+                'dialogue': data["dialogue"],
+                'choice_one': data["choice 1"],
+                'danger_one': data["danger level 1"],
+                'choice_two': data["choice 2"],
+                'danger_two': data["danger level 2"],
+                'choice_three': data["choice 3"],
+                'danger_three': data["danger level 3"],
+                'story': story.id
+            }
+            progress_serializer = ProgressSerializer(data=progress_data)
+            if progress_serializer.is_valid():
+                progress = progress_serializer.save()
+
+                story_data = story_serializer.data
+                progress_data = progress_serializer.data
+
+                return Response({"story":story_data, "progress":progress_data}, status=HTTP_200_OK)    
+                              
+            else:
+                # Rollback the story creation if progress creation fails
+                story.delete()
+                return Response(progress_serializer.errors, status=HTTP_400_BAD_REQUEST)                    
+
+        
+        else:
+            return Response(story_serializer.errors, status=HTTP_400_BAD_REQUEST)
+        
+        
+    
+
     # def get(self, request):
     #     # Get the user's cart
     #     cart = get_object_or_404(Cart, client=request.user)
@@ -163,12 +217,6 @@ class A_story(TokenReq):
 
 
     #     return Response(status=HTTP_400_BAD_REQUEST)
-    def post(self, request):
-        data = embark_story(request)
-        ai_image = make_image(data["dialogue"])
-        print(ai_image)
-        new_image = save_image(ai_image)
-
-        return Response({"full body":data, "introductory_text": data["dialogue"], "choices": [data["choice 1"],data["choice 2"],data["choice 3"]], "image" : new_image}, status=HTTP_200_OK)
+    
 
     pass

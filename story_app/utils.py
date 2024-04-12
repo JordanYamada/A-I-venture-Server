@@ -50,6 +50,8 @@ def embark_story(request):
   print(story_text)  # This will print the entire generated story
   data = json.loads(story_text)
   print(data["choice 1"])
+  data["theme"] = body["theme"]
+  data["role"] = body["role"]
 
   # introductory_text, choices = separate_choices(story_text)
 
