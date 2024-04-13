@@ -41,10 +41,7 @@ class All_stories(TokenReq):
         client = get_object_or_404(Client, email=request.user)
         print("UUUUUUUSSSSSSSSSSEEEEERRRRRRRRR:",client.id)
         data = embark_story(request)
-        if "epilogue" in data and data["epilogue"]:
-            ai_image = make_image(data["epilogue"])
-        else:
-            ai_image = make_image(data["dialogue"])   
+        ai_image = make_image(data["dialogue"])   
         print(ai_image)
         new_image = save_image(ai_image)
 
@@ -62,31 +59,21 @@ class All_stories(TokenReq):
             story = story_serializer.save()
             print(data)
             # Create a new progress instance associated with the new story
-            if "epilogue" in data and data["epilogue"]:
-                progress_data = {
-                    'title': data["title"],
-                    'image': new_image,
-                    'decision': data["decision"]or None,
-                    'result': data["result"] or None,
-                    'epilogue': data["epilogue"] or None,
-                    'story': story.id
-                }
-            else:
 
-                progress_data = {
-                    'title': data["title"],
-                    'image': new_image,
-                    'decision': data["decision"]or None,
-                    'result': data["result"] or None,
-                    'dialogue': data["dialogue"] or None,
-                    'choice_one': data["choice 1"] or None,
-                    'danger_one': data["danger level 1"] or None,
-                    'choice_two': data["choice 2"] or None,
-                    'danger_two': data["danger level 2"] or None,
-                    'choice_three': data["choice 3"] or None,
-                    'danger_three': data["danger level 3"] or None,
-                    'story': story.id
-                }
+            progress_data = {
+                'title': data["title"],
+                'image': new_image,
+                'decision': data["decision"]or None,
+                'result': data["result"] or None,
+                'dialogue': data["dialogue"] or None,
+                'choice_one': data["choice 1"] or None,
+                'danger_one': data["danger level 1"] or None,
+                'choice_two': data["choice 2"] or None,
+                'danger_two': data["danger level 2"] or None,
+                'choice_three': data["choice 3"] or None,
+                'danger_three': data["danger level 3"] or None,
+                'story': story.id
+            }
             progress_serializer = ProgressSerializer(data=progress_data)
             if progress_serializer.is_valid():
                 progress = progress_serializer.save()
@@ -129,38 +116,7 @@ class All_stories(TokenReq):
     #         "total_price": (total_price)
     #     }
     #     return Response(response_data, status=HTTP_200_OK)
-
-
-    # def put(self, request, cart_item_id, method):
-
-    #     data = get_object_or_404(Item, id=cart_item_id)
-
-    #     if data:
-    #         cart = Cart.objects.filter(client=request.user).first()
-
-    #         # If the user doesn't have a cart, create one
-    #         if not cart:
-    #             cart = Cart.objects.create(client=request.user)
-
-    #         # Check if the item is already in the cart
-    #         cart_item = Cart_item.objects.get(cart=cart, item=data)
-
-    #         if method == 'add':
-    #             # Increment the quantity if the item is already in the cart
-    #             cart_item.quantity += 1
-    #             # if cart_item.is_valid():
-    #             cart_item.save()
-    #         elif method == 'sub':
-    #             cart_item.quantity -= 1
-    #             # if cart_item.is_valid():
-    #             if cart_item.quantity == 0:
-    #                 cart_item.delete()
-    #             else:
-    #                 cart_item.save()
-    #         response = self.get(request)
-    #         return Response(response.data, status=HTTP_200_OK)
-    #     return Response(status=HTTP_400_BAD_REQUEST)
-    
+  
 
 
     # def delete(self, request, cart_item_id):
@@ -189,26 +145,42 @@ class A_story(TokenReq):
         serializer = StorySerializer(story)
         data = continue_story(request, serializer.data)
 
-        ai_image = make_image(data["dialogue"])
+        if "epilogue" in data and data["epilogue"]:
+            ai_image = make_image(data["epilogue"])
+        else:
+            ai_image = make_image(data["dialogue"])   
         print(ai_image)
         new_image = save_image(ai_image)
 
         print(data)
         # Create a new progress instance associated with the new story
-        progress_data = {
-            'title': data["title"],
-            'image': new_image,
-            'decision': data["decision"],
-            'result': data["result"],
-            'dialogue': data["dialogue"],
-            'choice_one': data["choice 1"],
-            'danger_one': data["danger level 1"],
-            'choice_two': data["choice 2"],
-            'danger_two': data["danger level 2"],
-            'choice_three': data["choice 3"],
-            'danger_three': data["danger level 3"],
-            'story': story_id
-        }
+        if "epilogue" in data and data["epilogue"]:
+            progress_data = {
+                'title': data["title"],
+                'image': new_image,
+                'decision': data["decision"]or None,
+                'result': data["result"] or None,
+                'epilogue': data["epilogue"] or None,
+                'story': story.id
+            }
+            story.completed = True
+            story.save()
+        else:
+
+            progress_data = {
+                'title': data["title"],
+                'image': new_image,
+                'decision': data["decision"]or None,
+                'result': data["result"] or None,
+                'dialogue': data["dialogue"] or None,
+                'choice_one': data["choice 1"] or None,
+                'danger_one': data["danger level 1"] or None,
+                'choice_two': data["choice 2"] or None,
+                'danger_two': data["danger level 2"] or None,
+                'choice_three': data["choice 3"] or None,
+                'danger_three': data["danger level 3"] or None,
+                'story': story.id
+            }
         progress_serializer = ProgressSerializer(data=progress_data)
         if progress_serializer.is_valid():
             progress = progress_serializer.save()
