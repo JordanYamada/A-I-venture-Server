@@ -17,7 +17,21 @@ class Progress(models.Model):
         blank=True,
         null=True,
     )
+
+    decision = models.CharField(
+        blank=True,
+        null=True,
+    )
+
+    result = models.CharField(
+        blank=True,
+        null=True,
+    )
     dialogue = models.CharField(
+        blank=True,
+        null=True,
+    )
+    epilogue = models.CharField(
         blank=True,
         null=True,
     )
