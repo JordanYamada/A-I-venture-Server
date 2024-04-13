@@ -15,15 +15,7 @@ class Memory(models.Model):
         blank=True,
         null=True,
     )
-    # choice_one = models.CharField(
-    #     blank=True,
-    #     null=True,
-    # )
-    # choice_two = models.CharField(
-    #     blank=True,
-    #     null=True,
-    # )
-    # choice_three = models.CharField(
-    #     blank=True,
-    #     null=True,
-    # )
+    title = models.CharField(
+        blank=True,
+        null=True,
+    )

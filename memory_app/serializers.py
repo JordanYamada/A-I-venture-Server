@@ -2,7 +2,7 @@ from .models import Memory
 from rest_framework import serializers
 
     
-class ProgressSerializer(serializers.ModelSerializer):
+class MemorySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Memory

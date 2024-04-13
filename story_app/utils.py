@@ -29,21 +29,17 @@ s3 = boto3.client(
 def embark_story(request):
   print(request.body)
   body = json.loads(request.body)
-  # print("ROLE!!!!!!",body["role"])
-  # print("THEME!!!!!!!!!!!!!!!!!!:", body["theme"])
+
   if body["theme"] == "epic adventure":
         voice = "dungeon master"
   elif body["theme"] == "space adventure":
         voice = "space captain"     
 
-  # print("THEME!!!!:",body["theme"],"VOICE!!!!!!!!:", voice)
   response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
       {"role": "system", "content": f"You are a {voice}."},
       {"role": "user", "content": (f'Begin a/an {body["theme"]} story about a {body["role"]}, and give me three choices to continue from. Format each choice to start as "Choice", and each choice will have a danger level shown as percentage. Do not offer any choices that have been previously chosen, but replace it with a new choice, so that there will always be three choices offered. keep count of how many choices I have chosen. If 4 choices have been chosen by me, conclude the story with an epilogue and do not offer any more choices.'+' until the conclusion, always give me the response in a JSON object following this example:{"title": story title, "dialogue": if no response from a choice: initial story text, else: response from chosen choice, "choice 1": random story choice 1, "danger level 1": danger level percentage, "choice 2": random story choice 2, "danger level 2": danger level percentage, "choice 3": random story choice 3, "danger level 3": danger level percentage, "choices made": number of choices chosen so far }. When choices made is 4, conclude the story with an epilogue, give me the response in a json format following this example:{"title": story title, "epilogue":  epilogue}. MAKE SURE THE RESPONSE is Always a JSON object.') },
-      # {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-      # {"role": "user", "content": "Where was it played?"}
     ]
   )
 
@@ -52,23 +48,15 @@ def embark_story(request):
   print("SSSTTTOOORRRYYY" , type(story_text),story_text)  # This will print the entire generated story
 
 
-
-  print("BBBEEEEEFFFOREEE")
   decision = f'Begin a/an {body["theme"]} about a {body["role"]}, and give me three choices to continue from. Format each choice to start as "Choice", and each choice will have a danger level shown as percentage. Do not offer any choices that have been previously chosen, but replace it with a new choice, so that there will always be three choices offered. keep count of how many choices I have chosen. If 4 choices have been chosen by me, conclude the story with an epilogue and do not offer any more choices.'+' until the conclusion, always give me the response in a JSON object following this example:{"title": story title, "dialogue": if no response from a choice: initial story text, else: response from chosen choice, "choice 1": random story choice 1, "danger level 1": danger level percentage, "choice 2": random story choice 2, "danger level 2": danger level percentage, "choice 3": random story choice 3, "danger level 3": danger level percentage, "choices made": number of choices chosen so far }. When choices made is 4, conclude the story with an epilogue, give me the response in a json format following this example:{"title": story title, "epilogue": epilogue}. MAKE SURE THE RESPONSE is Always a JSON object.'
 
-  print("AAAAAFFFTTEEEERRR", decision)
 
   data = json.loads(story_text)
-  print("DDDAAAAAAATTTTTAAAA EMMMMMMMMBAAAARRRK", type(data), data )
-  print("TTIIIIITTTLLLLLEEE",data["title"])
   data["theme"]= body["theme"]
-  print("DDDAAAAAAATTTTTAAAA 111111")
   data["role"] = body["role"]
   data["decision"] = decision
   data["result"] = story_text
-  print("MAAAAAADDDEEEE IIIITTT EEEMMMMBARKKKK")
 
-  # introductory_text, choices = separate_choices(story_text)
 
   return data
 
@@ -92,8 +80,6 @@ def continue_story(request, story):
     print("LOOOOOOOOOOOOKKKKK:",data)
     print("YYYYYYYYYOOOOOOOOOO:",story)
     choice = data["choice"]
-    # print("ROLE!!!!!!",body["role"])
-    # print("THEME!!!!!!!!!!!!!!!!!!:", body["theme"])
     if story["theme"] == "epic adventure":
           voice = "dungeon master"
     elif story["theme"] == "space adventure":
@@ -113,8 +99,6 @@ def continue_story(request, story):
 
     # Continue the conversation
     story_text = continue_conversation(*past_messages)
-
-    print("YYYYYYYYEEEEEEEEEAAAA", story_text, "DDDDDDDDDOOOOOOOOOOOONNNNNNNNEEEEEE")
 
     data = json.loads(story_text)
 

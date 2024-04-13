@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import All_stories, A_story, Stories_by_completed
-# Register the boolean converter
+
 
 
 
