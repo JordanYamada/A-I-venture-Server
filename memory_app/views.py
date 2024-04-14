@@ -4,8 +4,6 @@ from user_app.views import TokenReq
 from rest_framework.response import Response
 from .models import Memory
 from user_app.models import Client
-from progress_app.models import Progress
-from progress_app.serializers import ProgressSerializer
 from .serializers import MemorySerializer
 from rest_framework.status import (
     HTTP_200_OK,
@@ -28,6 +26,26 @@ class All_memories(TokenReq):
         memories = Memory.objects.all()
         serializer = MemorySerializer(memories, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
+  
+  def post(self, request):
+        client = get_object_or_404(Client, email=request.user)
+
+        new_memory = {
+            "image": request.image,
+            "dialogue": request.dialogue,
+            "title": request.title,
+            "client": client.id,
+        }
+
+        memory_serializer = MemorySerializer(data=new_memory)
+        if memory_serializer.is_valid():
+            memory = memory_serializer.save()
+
+            return Response(memory, status=HTTP_200_OK) 
+
+        else:
+            return Response(memory_serializer.errors, status=HTTP_400_BAD_REQUEST)
+        
   pass
 
 

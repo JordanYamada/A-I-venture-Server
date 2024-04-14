@@ -1,5 +1,6 @@
 from django.db import models
 from django.core import validators as v
+from user_app.models import Client
 
 
 
@@ -19,3 +20,5 @@ class Memory(models.Model):
         blank=True,
         null=True,
     )
+
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, related_name="memories")

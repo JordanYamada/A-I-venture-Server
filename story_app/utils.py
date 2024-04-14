@@ -75,7 +75,6 @@ def continue_conversation(*args):
 
 def continue_story(request, story):
     
-    print("HHHHEEEYYYY!!!!!!:",request.body)
     data = json.loads(request.body)
     print("LOOOOOOOOOOOOKKKKK:",data)
     print("YYYYYYYYYOOOOOOOOOO:",story)
@@ -132,7 +131,6 @@ def make_image(dialogue):
 
         # Extract image URL and description from response
         image_url = response.data[0].url
-        # image_description = response.data[0].revised_prompt
 
         return image_url
     except Exception as e:
