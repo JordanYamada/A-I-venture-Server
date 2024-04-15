@@ -30,10 +30,14 @@ client = OpenAI(
 
 class All_stories(TokenReq):
     def get(self, request):
-        
-        stories = Story.objects.all()
+        print("UUSSERR:",request.user)
+        client = get_object_or_404(Client, email=request.user)
+        print("CLIENT!!!",client.id)
+        stories = Story.objects.filter(client=client.id)
+        print(stories)
         serializer = StorySerializer(stories, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
+        print(serializer.data)
+        return Response( serializer.data, status=HTTP_200_OK)
         
     def post(self, request):
 
