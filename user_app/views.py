@@ -35,7 +35,7 @@ class Sign_Up(APIView):
 class Log_in(APIView):
     def post(self, request):
         data = request.data.copy()
-        print("DDAATTAA:", data)
+        print("DDAATTAA:",data)
         data['username'] = request.data.get("username", request.data.get("email"))
         user = authenticate(username=data.get("username"), password=data.get("password"))
         print(user)
@@ -62,8 +62,9 @@ class Log_out(TokenReq):
 
 class Info(TokenReq):
     def get(self, request):
+        print("HHEYYYOOO",request.user)
         try:
-            return Response({"email":request.user.email})
-        except ValidationError as e:
-            print(e)
-            return Response(e, status=HTTP_400_BAD_REQUEST)
+            ruser = request.user
+            return Response({ "client": ruser.email }, status=HTTP_200_OK)
+        except:
+            return Response("No user matching credentials", status=HTTP_400_BAD_REQUEST)
