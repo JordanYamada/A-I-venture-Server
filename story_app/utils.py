@@ -48,7 +48,7 @@ def embark_story(request):
   print("SSSTTTOOORRRYYY" , type(story_text),story_text)  # This will print the entire generated story
 
 
-  decision = f'Begin a/an {body["theme"]} about a {body["role"]}, and give me three choices to continue from. Format each choice to start as "Choice", and each choice will have a danger level shown as percentage. Do not offer any choices that have been previously chosen, but replace it with a new choice, so that there will always be three choices offered. keep count of how many choices I have chosen. If 4 choices have been chosen by me, conclude the story with an epilogue and do not offer any more choices.'+' until the conclusion, always give me the response in a JSON object following this example:{"title": story title, "dialogue": if no response from a choice: initial story text, else: response from chosen choice, "choice 1": random story choice 1, "danger level 1": danger level percentage, "choice 2": random story choice 2, "danger level 2": danger level percentage, "choice 3": random story choice 3, "danger level 3": danger level percentage, "choices made": number of choices chosen so far }. When choices made is 4, conclude the story with an epilogue, give me the response in a json format following this example:{"title": story title, "epilogue": epilogue}. MAKE SURE THE RESPONSE is Always a JSON object.'
+  decision = f'Begin a/an {body["theme"]} about a {body["role"]}, and give me three choices to continue from. Format each choice to start as "Choice", and each choice will have a danger level shown as percentage. Do not offer any choices that have been previously chosen, but replace it with a new choice, so that there will always be three choices offered. keep count of how many choices I have chosen. If 4 choices have been chosen by me, on the next choice, must conclude the story with an epilogue and do not offer any more choices.'+' until the conclusion, always give me the response in a JSON object following this example:{"title": story title, "dialogue": if no response from a choice: initial story text, else: response from chosen choice, "choice 1": random story choice 1, "danger level 1": danger level percentage, "choice 2": random story choice 2, "danger level 2": danger level percentage, "choice 3": random story choice 3, "danger level 3": danger level percentage, "choices made": number of choices chosen so far }. Keep track of "choices made, and hen "choices made" is 4, conclude the story with an epilogue, give me the response in a json format following this example:{"title": story title, "epilogue": epilogue}. MAKE SURE THE RESPONSE is Always a JSON object.'
 
 
   data = json.loads(story_text)
@@ -122,7 +122,7 @@ def make_image(dialogue):
         # Generate image using OpenAI API
         response = client.images.generate(
             model="dall-e-3",
-            prompt=description,
+            prompt=f"{description} Do Not Add Text to the Image",
             n=1,
             size="1024x1024"
         )

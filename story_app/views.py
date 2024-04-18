@@ -37,7 +37,7 @@ class All_stories(TokenReq):
         print(stories)
         serializer = StorySerializer(stories, many=True)
         print(serializer.data)
-        return Response( serializer.data, status=HTTP_200_OK)
+        return Response( {"stories":serializer.data}, status=HTTP_200_OK)
         
     def post(self, request):
 
@@ -100,7 +100,7 @@ class A_story(TokenReq):
     def get(self, request, story_id):
         story = get_object_or_404(Story, id=story_id)
         serializer = StorySerializer(story)
-        return Response(serializer.data, status=HTTP_200_OK)
+        return Response({"story":serializer.data, "progress": serializer.data["progress"]}, status=HTTP_200_OK)
     
     def post(self, request, story_id):
         story = get_object_or_404(Story, id=story_id)
@@ -160,6 +160,9 @@ class A_story(TokenReq):
     def delete(self, request, story_id):
         story = get_object_or_404(Story, id=story_id)
         story.delete()
+
+        print(story.title)
+
         return Response(status=HTTP_204_NO_CONTENT)    
 
     pass
@@ -174,11 +177,14 @@ class Stories_by_completed(TokenReq):
             completed_bool = False
         else:
             return Response({'error': 'Invalid value for "completed" parameter'}, status=HTTP_400_BAD_REQUEST)
-        # Get all stories based on whether they are completed or not
-        stories = get_object_or_404(Story, completed=completed_bool)
+        # Get all stories based the user and on whether they are completed or not
+        client = get_object_or_404(Client, email=request.user)
+      
+        stories = Story.objects.filter(client=client.id , completed=completed_bool)
+        # stories = get_list_or_404(Story, completed=completed_bool).filder
 
         # Serialize the stories
         serializer = StorySerializer(stories, many=True)
 
         # Return the serialized data
-        return Response(serializer.data, status=HTTP_200_OK)
+        return Response({"stories":serializer.data}, status=HTTP_200_OK)

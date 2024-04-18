@@ -25,28 +25,30 @@ class All_memories(TokenReq):
         
         memories = Memory.objects.all()
         serializer = MemorySerializer(memories, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
+        return Response({"memoryData":serializer.data}, status=HTTP_200_OK)
   
   def post(self, request):
+        # try:
+        body = json.loads(request.body)
         client = get_object_or_404(Client, email=request.user)
-
-        new_memory = {
-            "image": request.image,
-            "dialogue": request.dialogue,
-            "title": request.title,
+        
+        new_memory_data = {
+            "image": body["image"],
+            "dialogue": body["dialogue"],
+            "title": body["title"],
             "client": client.id,
         }
 
-        memory_serializer = MemorySerializer(data=new_memory)
+        memory_serializer = MemorySerializer(data=new_memory_data)
         if memory_serializer.is_valid():
-            memory = memory_serializer.save()
-
-            return Response(memory, status=HTTP_200_OK) 
-
+            memory_serializer.save()
+            return Response(memory_serializer.data, status=HTTP_201_CREATED)
         else:
             return Response(memory_serializer.errors, status=HTTP_400_BAD_REQUEST)
-        
-  pass
+
+  #       except Exception as e:
+  #           return Response(str(e), status=HTTP_400_BAD_REQUEST)
+  # pass
 
 
 class A_memory(TokenReq):
