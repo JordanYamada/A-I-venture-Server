@@ -54,14 +54,14 @@ class All_memories(TokenReq):
 class A_memory(TokenReq):
 
   def get(self, request, memory_id):
-        memory = get_object_or_404(Memory, id=memory_id)
+        memory = get_object_or_404(Memory, id=memory_id, client=request.user)
         serializer = MemorySerializer(memory)
         return Response(serializer.data, status=HTTP_200_OK)
   
 
 
   def delete(self, request, memory_id):
-          memory = get_object_or_404(Memory, id=memory_id)
+          memory = get_object_or_404(Memory, id=memory_id, client=request.user)
           memory.delete()
           return Response(status=HTTP_204_NO_CONTENT)    
   pass
