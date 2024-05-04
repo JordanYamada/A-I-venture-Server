@@ -62,7 +62,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ai_dventure_proj.urls'
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    env.get("HOST_CLIENT"),
+]
 
 TEMPLATES = [
     {
