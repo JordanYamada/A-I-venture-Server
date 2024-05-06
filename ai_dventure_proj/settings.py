@@ -88,10 +88,16 @@ WSGI_APPLICATION = 'ai_dventure_proj.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.get("DATABASE_NAME"),
+        'NAME': env.get('POSTGRES_DB'),
+        'USER': env.get('POSTGRES_USER'), 
+        'PASSWORD': env.get('POSTGRES_PASSWORD'),
+        'HOST': env.get('POSTGRES_HOST', 'localhost'), 
+        'PORT': env.get('POSTGRES_PORT', '5432'),
     }
 }
 
