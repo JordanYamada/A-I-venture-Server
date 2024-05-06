@@ -23,7 +23,7 @@ class All_memories(TokenReq):
 
   def get(self, request):
         
-        memories = Memory.objects.all()
+        memories = Memory.objects.filter(client=request.user)
         serializer = MemorySerializer(memories, many=True)
         return Response({"memoryData":serializer.data}, status=HTTP_200_OK)
   
