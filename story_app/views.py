@@ -16,15 +16,16 @@ from rest_framework.status import (
 from .utils import embark_story, make_image, save_image, continue_story
 import requests
 import json
-from ai_dventure_proj.settings import env
+# from ai_dventure_proj.settings import env
 from openai import OpenAI
+import os
 import google.generativeai as genai
 
-genai.configure(api_key=env.get("GEMINI_API_KEY"))
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 model = genai.GenerativeModel('gemini-pro')
 
 client = OpenAI(
-  api_key=env.get("OPENAI_API_KEY"),
+  api_key=os.environ.get("OPENAI_API_KEY"),
 )
 # Create your views here.
 

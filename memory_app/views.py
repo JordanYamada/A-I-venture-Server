@@ -13,7 +13,7 @@ from rest_framework.status import (
 )
 import requests
 import json
-from ai_dventure_proj.settings import env
+# from ai_dventure_proj.settings import env
 
 
 

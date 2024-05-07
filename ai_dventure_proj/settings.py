@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import dotenv_values
 import os
+from dotenv import load_dotenv
 
-env = dotenv_values(".env")
+# Load environment variables from .env file
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +32,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = os.environ.get("DEBUG")
 
 
-ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOSTS")]
+ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOSTS"), "localhost"]
 
 
 # Application definition
@@ -64,9 +66,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ai_dventure_proj.urls'
 
-CORS_ALLOWED_ORIGINS = [
-    env.get("HOST_CLIENT"),
-]
+
+CORS_ALLOWED_ORIGINS = [os.environ.get("HOST_CLIENT")]
+# CORS_ALLOWED_ORIGINS = ['*']
 
 TEMPLATES = [
     {
@@ -96,10 +98,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('POSTGRES_DB'),
-        'USER': os.environ.get('POSTGRES_USER'), 
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'), 
-        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+        # 'USER': os.environ.get('POSTGRES_USER'), 
+        # 'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        # 'HOST': os.environ.get('POSTGRES_HOST', 'localhost'), 
+        # 'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
 
