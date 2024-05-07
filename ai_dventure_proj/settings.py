@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from dotenv import dotenv_values
+import os
 
 env = dotenv_values(".env")
 
@@ -23,14 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.get("DEBUG")
+DEBUG = os.environ.get("DEBUG")
 
 
 ALLOWED_HOSTS = [
-  env.get("ALLOWED_HOSTS"),
+  os.environ.get("ALLOWED_HOSTS"),
 ]
 
 
@@ -96,11 +97,11 @@ WSGI_APPLICATION = 'ai_dventure_proj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.get('POSTGRES_DB'),
-        'USER': env.get('POSTGRES_USER'), 
-        'PASSWORD': env.get('POSTGRES_PASSWORD'),
-        'HOST': env.get('POSTGRES_HOST', 'localhost'), 
-        'PORT': env.get('POSTGRES_PORT', '5432'),
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'), 
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'), 
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
 
