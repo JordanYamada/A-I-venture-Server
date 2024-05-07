@@ -1,0 +1,22 @@
+databases:
+  - name: AIVenture
+    plan: free
+    databaseName: aiventure_db
+    user: yams
+
+services:
+  - type: web
+    plan: free
+    name: ai_dventure_proj
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn ai_dventure_proj.asgi:application -k uvicorn.workers.UvicornWorker"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: AIVenture
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
