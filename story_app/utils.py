@@ -3,23 +3,15 @@ from django.shortcuts import render, get_object_or_404, get_list_or_404
 from .models import Story
 import json
 import time
-# from ai_dventure_proj.settings import env
 import io
 import requests
 import boto3
 from django.http import JsonResponse
 from PIL import Image
 from openai import OpenAI
-import google.generativeai as genai
 import os
 
 
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-model = genai.GenerativeModel('gemini-pro')
-
-
-print("OPEEEENNNNNAAAIIIIIKKEEEEYYYY:::",os.environ.get("OPENAI_API_KEY"))
-print("CORS: ",os.environ.get("HOST_CLIENT"))
 
 
 client = OpenAI(
@@ -83,8 +75,6 @@ def continue_conversation(*args):
 def continue_story(request, story):
     
     data = json.loads(request.body)
-    print("LOOOOOOOOOOOOKKKKK:",data)
-    print("YYYYYYYYYOOOOOOOOOO:",story)
     choice = data["choice"]
     if story["theme"] == "epic adventure":
           voice = "dungeon master"
